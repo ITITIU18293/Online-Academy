@@ -1,0 +1,402 @@
+{{#section 'css'}}
+
+<style>
+  .videoContainer {
+    max-width: 800px;
+  }
+  .plyr {
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+</style>
+
+{{/section}}
+
+{{#section 'js'}}
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css" />
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/jquery.star-rating-svg.min.js"></script>
+<link rel="stylesheet" type="text/css"
+  href="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/css/star-rating-svg.min.css">
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
+
+
+<script>
+  $(".my-rating").starRating({
+    readOnly: true,
+    strokeColor: '#EB8A2F',
+    strokeWidth: 10,
+    starSize: 18
+  });
+  $(".my-vote").starRating({
+    strokeColor: '#EB8A2F',
+    readonly: false,
+    strokeWidth: 10,
+    starSize: 30
+  });
+  $(".my-vote").on("click", function () {
+    $(".inputVote").val($('.my-vote').starRating('getRating'));
+    $("#formVote").submit();
+  })
+  $(".btnSend").click(function () {
+    $(".inputVote").val($('.my-vote').starRating('getRating'));
+  })
+  document.addEventListener('DOMContentLoaded', () => {
+    // This is the bare minimum JavaScript. You can opt to pass no arguments to setup.
+    const player = new Plyr('#player');
+    // Expose
+    window.player = player;
+  })
+</script>
+
+<script>
+  $(".formSubmit").on('submit', function (event) {
+    event.preventDefault();
+    var form = $(this);
+    var url = form.attr('action');
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: form.serialize(),
+      success: function (data) {
+        location.reload();
+      }
+    })
+  })
+  $('#btn_preview_0').on('click', function () {
+    $("document").css({ "background-color": "red" });
+    document.getElementById('id_0').style.display = 'block'
+    event.stopPropagation();
+  });
+  $('#id_0').on('click', function () {
+    event.stopPropagation();
+  });
+  $(document).click(function () {
+    document.getElementById('id_0').style.display = 'none'
+    player.stop();
+  });
+  $('#span_0').text("Xem trước bài học")
+  $('#span_0').css({ "background-color": "green" })
+</script>
+
+{{/section}}
+
+{{#with course}}
+<div class="course-des" style="width: inherit;height: 350px; background-color: #1E1E1C; z-index: 9">
+  <div class="course-des" style="width: inherit; background-color: #1E1E1C">
+    <div class="d-flex container m-auto p-3 text-white ">
+      <div class="flex-grow-1">
+        <div class="p-2 d-flex flex-column flex-grow-1">
+          <h2 style="font-size: 2rem" class="font-weight-bold">{{courseName}}</h2>
+          <span class="mb-2" style="font-size: 1.5rem">
+            {{{courseDes}}}
+          </span>
+          <div class="mt-auto">
+            <span class="card-text">Giá:
+              <span class="text-danger font-weight-bold">
+                {{#if (isZero coursePrice)}}
+                Miễn Phí
+                {{else}}
+                {{#if courseDiscount}} <del>{{format coursePrice}}</del> {{format courseNewPrice}}
+                (-{{courseDiscount}}%)
+                {{else}} {{format coursePrice}}
+                {{/if}}
+                {{/if}}
+              </span>
+            </span>
+            <span class="card-text d-block">Số lượng học viên: {{courseRegistered}}</span>
+            <span class="card-text d-block">Lần cập nhật cuối: {{courseUpdatedAt}}</span>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="my-rating pl-2 pb-2 " data-rating="{{coursePointEval}}"></div>
+          <div class=" mt-1 text-danger ml-2 font-weight-bold">{{coursePointEval}}</div>
+          <div class="mt-1 ml-2">({{courseAmountEval}} lượt bình chọn)</div>
+        </div>
+
+      </div>
+      <div class="">
+        <img src="{{largeImage courseImage}}" alt="{{courseName}}" title="{{courseName}}">
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="row container p-5 m-auto d-flex" style="z-index: 7; position: relative">
+  <div class="course-main-content col-8">
+    <div class="course-detail">
+      <h3>{{courseDetail}}</h3>
+    </div>
+
+    <div class="course-lesson-preview my-5">
+      <div class="select-box shadow" style="">
+        <div class="options-container active">
+          {{#each ../lessons}}
+          <div class="option pl-2 d-block p-3" style="color: black;text-decoration: none;"
+            id="btn_preview_{{lessonID}}">
+            <input type="radio" class="radio" id="automobiles" name="category" />
+            <span for="automobiles" style="max-width: 180px; overflow: hidden;">{{lessonName}}</span>
+            <span class="badge badge-danger float-right" style="padding: 5px" id="span_{{lessonID}}">
+              {{#if done}}
+              Đã hoàn thành
+              {{else}}
+              Chưa hoàn thành
+              {{/if}}
+            </span>
+          </div>
+          <div id="id_{{lessonID}}" class="modal"
+            style="width: 800px; height: 500px; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+            <video controls id="player">
+              <!-- Video files -->
+              <source src="/public/imagesCourse/{{courseID}}/{{lessonID}}/video.mp4" type="video/mp4" size="576">
+              <source src="/public/imagesCourse/{{courseID}}/{{lessonID}}/video.mp4" type="video/mp4" size="720">
+            </video>
+
+          </div>
+          {{/each}}
+        </div>
+        <a href="javascript:void(0)"
+          class="selected list-group-item list-group-item-action rounded bg-primary text-white border-0"
+          style="border: 2px rgba(0,0,0,.125) solid !important">
+          <h5 style="color: white !important">Danh sách bài học</h5>
+        </a>
+      </div>
+    </div>
+
+    {{#each ../lecturer}}
+    <div class="course-instructor mt-5">
+      <div class="styles--instructors--2JsS3">
+        <h4 class="font-weight-bold pb-2" style="border-bottom: 1px rgb(151, 144, 144) solid">Giảng viên</h4>
+
+        <div class="instructor--instructor--1wSOF" data-purpose="instructor-bio"><span class="in-page-offset-anchor">
+          </span>
+          <div>
+            <div class="udlite-heading-lg instructor--instructor__title--34ItB"> <b>{{userDisplayName}}</b>
+            </div>
+          </div>
+          <div class="instructor-intro d-flex my-3">
+            <a class="instructor-image" href="/public/imagesAvatar/{{userUsername}}.png"><img class="rounded-circle"
+                width="64" height="64" style="width:6.4rem;height:6.4rem"
+                src="/public/imagesAvatar/{{userUsername}}.png"></a>
+            <ul class="my-auto ml-3">
+              <li>
+                <div class="udlite-block-list-item-content">232,716 Reviews</div>
+              </li>
+              <li>
+                <div class="udlite-block-list-item-content">678,727 Students</div>
+              </li>
+              <li>
+                <div class="udlite-block-list-item-content">Số khóa học đã đăng: {{sum}} Khóa học</div>
+              </li>
+            </ul>
+          </div>
+          <div class="show-more--container">
+            <div class="show-more--content">
+              <div>
+                <div class="udlite-text-sm instructor--instructor__description--1dHxF">
+                  {{userIntro}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+
+
+    {{!-- list-comment --}}
+    <div class="mt-5 comment-list">
+      <h4 class="font-weight-bold pb-2" style="border-bottom: 1px rgb(151, 144, 144) solid">Bình luận về khóa học</h4>
+      {{#if ../this.isEmptyComment}}
+      <p>Chưa có bình luận nào về khóa học này</p>
+      {{else}}
+      {{#each ../this.reviews}}
+      <div class="comment_detail d-flex pt-2">
+        <div class="comment_avatar rounded-circle mr-3"><img style="width: 40px" class="comment_avatar rounded-circle"
+            src="https://avatar-redirect.appspot.com/google/106274965921876463717?size=400" alt="d"></div>
+        <div class="comment_comment">
+          <div class="comment_comment  px-3 py-2" style="background-color: #d1cece; border-radius: 20px;">
+            <span class="comment_comment font-weight-bold">{{username}}</span>
+            <div class="d-flex">
+              <div class="my-rating " data-rating="{{vote}}"></div>
+            </div>
+            <div class="comment_comment"><span>{{content}}</span></div>
+          </div>
+          <div class="comment_commentTime px-3" style="color: #8b8a8a">
+            <p class="comment_createdAt">{{dateReview}}</p>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+      {{/if}}
+    </div>
+
+    {{!-- comment --}}
+    {{#if ../this.isRegistered}}
+    <div class="comment-form d-flex">
+      <div class="user-avatar rounded-circle p-3 mr-3">
+        <img class="rounded-circle" src="https://avatar-redirect.appspot.com/google/106274965921876463717?size=400"
+          style="width: 50px" alt="">
+      </div>
+      <form class="form-group flex-grow-1 text-right formSubmit" action="/users/sendComment" method="POST">
+        <textarea class="form-control" name="content" id="" rows="3" cols="50" placeholder="Viết bình luận của bạn ..."
+          required></textarea>
+        <input type="text" name="courseID" class="d-none" value="{{courseID}}">
+        <input type="text" name="vote" class="d-none getVote inputVote" value="">
+        <button class="btn btn-primary btnSend mt-2" type="submit">
+          <i class="fa fa-send" aria-hidden="true"></i>
+          Gửi
+        </button>
+      </form>
+    </div>
+    {{!-- vote --}}
+    {{#if ../this.isRegistered}}
+    <div class="position-relative" style="width:250px; top: -60px; left: 300px">
+      {{#if ../this.isVote}}
+      <div class="my-vote my-2" data-rating="{{../this.vote.voteValue}}"></div>
+      <form action="/users/editVote" method="post" class="formSubmit" id="formVote">
+        <input type="text" name="vote" class="d-none getVote inputVote" value="">
+        <input type="text" name="courseID" class="d-none" value="{{courseID}}">
+      </form>
+      {{else}}
+      <div class="my-vote my-2"></div>
+      <form action="/users/vote" method="post" class="formSubmit" id="formVote">
+        <input type="text" name="vote" class="d-none getVote inputVote" value="">
+        <input type="text" name="courseID" class="d-none" value="{{courseID}}">
+      </form>
+      {{/if}}
+    </div>
+    {{/if}}
+    {{/if}}
+
+  </div>
+
+  <div class="col-4 fixed-course-content " id="fixed-course-content">
+    <div class="card shadow d-flex m-auto">
+      <div class="p-2 d-flex flex-column flex-grow-1">
+
+        <div class="mt-auto d-flex flex-column p-3 mx-auto">
+          {{#if ../this.isFavorite}}
+          <form action="/users/removeFavorite" method="POST" class="formSubmit d-flex flex-column">
+            <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+            <button type="submit" class="btn btn-sm btn-outline-primary p-2 m-1"> KHÓA HỌC YÊU THÍCH</button>
+          </form>
+          {{else}}
+          <form action="/users/addFavorite" method="POST" class="formSubmit d-flex flex-column">
+            <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+            <button type="submit" class="btn btn-sm btn-outline-primary p-2 m-1"> THÊM VÀO KHÓA HỌC YÊU
+              THÍCH</button>
+          </form>
+          {{/if}}
+          {{#if ../this.isRegistered}}
+          <form action="/courses/learn?courseID={{courseID}}" method="GET" class="d-flex flex-column">
+            <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+            <button class="btn btn-sm btn-outline-success p-2 m-1" type="submit"> HỌC </button>
+          </form>
+          {{else}}
+          <form action="/users/registerCourse" method="POST" class="d-flex flex-column formSubmit">
+            <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+            <button class="btn btn-sm btn-outline-success p-2 m-1" type="submit"> ĐĂNG KÝ KHÓA HỌC </button>
+          </form>
+          {{/if}}
+          <h5 class="my-3">Miêu tả về khóa học:</h5>
+          <div class="ml-4">
+            <li class="card-text d-block"><i class="fas fa-dollar-sign mr-3 " style="width: 20px"></i> Giá: <span
+                class="text-danger font-weight-bold">
+                {{#if (isZero coursePrice)}}
+                Miễn Phí
+                {{else}}
+                {{#if courseDiscount}} <del>{{format coursePrice}}</del> {{format courseNewPrice}}
+                {{else}} {{format coursePrice}}
+                {{/if}}
+                {{/if}}
+            </li>
+            {{#if courseDiscount}}
+            <li class="card-text d-block"><i class="fas fa-money mr-3   " style="width: 20px"></i> Khuyến mãi:
+              -{{courseDiscount}}%
+              {{/if}}
+            </li>
+            <li class="card-text d-block"><i class="fas fa-user-friends mr-3   " style="width: 20px"></i> Số lượng học
+              viên: {{courseRegistered}}
+            </li>
+            <li class="card-text d-block"><i class="fa fa-clock-o mr-3" aria-hidden="true" style="width: 20px"></i> Thời
+              gian khóa học:
+              {{courseRegistered}}</li>
+            <li class="card-text d-block"><i class="fa fa-list-ol mr-3" aria-hidden="true" style="width: 20px"></i> Lĩnh
+              vực: {{courseCatName}}</li>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/with}}
+
+<div class="course-relate-to p-5 m-auto">
+  <div class="list-1 container p-5 w-100" style="padding-top: 30px!important" id='list-1'>
+    <div class="" style="padding: 15px">
+      <h4 class="font-weight-bold pb-2" style="border-bottom: 1px rgb(151, 144, 144) solid">Khóa học có liên quan</h4>
+
+    </div>
+    <div class="row">
+      {{#each this.relatedCourse}}
+      <div class="col-md-3 mb-5 ">
+        <a class=" text-left p-0" style="color: black; text-decoration: none" href="/courses/{{courseID}}">
+          <div class="card h-100 shadow d-flex m-auto" style="max-width: 250px">
+            <img src="{{thumbImage courseImage}}" alt="{{courseName}}" title="{{courseName}}">
+            <div class="p-2 d-flex flex-column flex-grow-1">
+              <h5 class="font-weight-bold m-0">{{courseName}}</h5>
+              <div class="mt-auto">
+                <span class="text-success font-weight-bold d-block">{{catName}}</span>
+                <span class=" courseLecturer">
+                  {{userDisplayName}}
+                </span>
+
+                <div class="mt-auto d-flex justify-content-between">
+                  <div>
+                    <span style="position: relative; top: 2px; "
+                      class="text-danger font-weight-bold">{{coursePointEval}}</span>
+                    <div class="my-rating pb-2 d-inline" data-rating="{{coursePointEval}}"></div>
+                    <span class="text-secondary " style="font-size: 15px; position: relative; top: 2px; ">{{#if sum}}
+                      ({{sum}}) {{else}} (0) {{/if}}</span>
+                  </div>
+                  <div style="position: relative; top: 15px">
+                    {{#if (isUser ../user.userType)}}
+                    {{#if isFavorite}}
+                    <form action="/users/removeFavorite" class="formSubmit" method="POST">
+                      <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+                      <button type="submit" class="btn btn-sm py-2 btn-success"
+                        title="Xóa khỏi danh sách khóa học yêu thích">
+                        <i class="fa fa-heart" aria-hidden="true"></i>
+                      </button>
+                    </form>
+                    {{else}}
+                    <form action="/users/addFavorite" method="POST" class="formSubmit">
+                      <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+                      <button type="submit" class="btn btn-sm py-2 btn-outline-success"
+                        title="Thêm vào danh sách khóa học yêu thích">
+                        <i class="fa fa-heart" aria-hidden="true"></i>
+                      </button>
+                    </form>
+                    {{/if}}
+                    {{/if}}
+                  </div>
+                </div>
+                <div class="pb-2">
+                  <span class="card-text"><span class=" font-weight-bold">{{#if (isZero coursePrice)}}Miễn
+                      Phí {{else}}{{format coursePrice}}{{/if}}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      {{/each}}
+    </div>
+  </div>
+</div>
+{{> footer}}

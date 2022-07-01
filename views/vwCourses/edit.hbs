@@ -1,0 +1,64 @@
+{{#section 'js'}}
+<script>
+  $("#submitDeleteCourse").click(function () {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.value) {
+        var action = $(this).attr('formaction')
+        var form = $("#formEditCourse");
+        form.attr('action', action);
+        form.submit();
+        Swal.fire(
+          'Deleted!',
+          'This Course has been deleted.',
+          'success'
+        ).then((result) => {
+            if(result.value) 
+              $(location).attr('href', '/courses')
+        })
+      }
+    })
+
+  });
+</script>
+{{/section}}
+
+<form method="POST" id="formEditCourse">
+  <div class="card  m-5 mt-5">
+    <h5 class="card-header">
+      Course
+    </h5>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="txtCourseID">#</label>
+        <input type="text" class="form-control" id="txtCourseID" name="courseID" value="{{this.course.courseID}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="txtCourseName">Course</label>
+        <input type="text" class="form-control" id="txtCourseName" name="courseName" value="{{this.course.courseName}}"
+          autofocus>
+      </div>
+    </div>
+    <div class="card-footer text-muted">
+      <a class="btn btn-primary" href="/courses" role="button">
+        <i class="fa fa-backward" aria-hidden="true"></i>
+        Back to List
+      </a>
+      <button type="button" id="submitDeleteCourse" class="btn btn-outline-danger" formaction="/courses/del">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+        Delete
+      </button>
+      <button type="submit" class="btn btn-outline-success" formaction="/courses/patch">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        Save
+      </button>
+    </div>
+  </div>
+</form>

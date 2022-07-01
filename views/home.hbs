@@ -1,0 +1,177 @@
+{{#section 'css'}}
+<style>
+  .top-cat {
+    position: relative;
+    top: 0;
+    transition: top ease 0.5s;
+  }
+
+  .top-cat:hover {
+    top: -10px;
+  }
+</style>
+{{/section}}
+
+{{#section 'js'}}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/jquery.star-rating-svg.min.js"></script>
+<link rel="stylesheet" type="text/css"
+  href="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/css/star-rating-svg.min.css">
+<script>
+  $(".my-rating").starRating({
+    readOnly: true,
+    strokeColor: '#EB8A2F',
+    strokeWidth: 10,
+    totalStars: 5,
+    starSize: 18
+  });
+</script>
+
+<script>
+  $(".formSubmit").on('submit', function (event) {
+    event.preventDefault();
+    var form = $(this);
+    var url = form.attr('action');
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: form.serialize(),
+      success: function (data) {
+        location.reload();
+      }
+    })
+  })
+</script>
+
+{{/section}}
+
+
+<div>
+  <div class="d-flex bg-image" style="height: 90vh" id='intro-landing'>
+    <div class="row d-flex justify-content-center align-self-lg-center text-lg-left text-md-center pt-5 bg-text">
+      <div class='col-lg-5 justify-content-center align-self-lg-center'>
+        <h1 class="display-4">Chào mừng bạn đến với <span class="text-danger">Online</span>
+          <span class='font-italic'
+            style='color:rgb(123, 234, 253); text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;'>Academy
+          </span>
+        </h1>
+        <p class="lead">Đây là hệ thống học trực tuyến uy tín và chất lượng về các khóa học lập trình và kỹ năng sống
+          khác.
+
+        </p>
+        <hr class="my-4">
+        <p class="lead">
+          <button class="btn btn-primary btn-lg" onclick="goToByScroll('list-0')">Tìm hiểu về Online Academy</button>
+        </p>
+      </div>
+      <div class="col-lg-5">
+        <img src="/public/svg/undraw_Followers_re_6k3g.svg" alt="" style="width: 100%">
+      </div>
+    </div>
+  </div>
+
+  {{!-- LIST BEST SELLER --}}
+  <div id="list-0"></div>
+  <div class="list-1 mt-5 container w-100" style="padding-top: 100px!important" id='list-1'>
+    <h3 class="" style="">
+      <span class=''>Những khóa học nổi bật</span>
+      <hr>
+    </h3>
+    <div class="row d-flex">
+      {{#each this.outStandingCourse}}
+
+      <div class="col-md-3 mb-5">
+        <a class=" text-left p-0" style="color: black; text-decoration: none" href="/courses/{{courseID}}">
+          <div class="card h-100 shadow d-flex m-auto" style="max-width: 250px">
+            <img src="{{thumbImage courseImage}}" alt="{{courseName}}" title="{{courseName}}">
+            <div class="p-2 d-flex flex-column flex-grow-1">
+              <h5 class="font-weight-bold m-0">{{courseName}}</h5>
+              <div class="mt-auto">
+                <span class="text-success font-weight-bold d-block">{{catName}}</span>
+                <span class=" courseLecturer">
+                  {{userDisplayName}}
+                </span>
+
+                <div class="mt-auto d-flex justify-content-between">
+                  <div>
+                    <span style="position: relative; top: 2px; "
+                      class="text-danger font-weight-bold">{{coursePointEval}}</span>
+                    <div class="my-rating pb-2 d-inline" data-rating="{{coursePointEval}}"></div>
+                    <span class="text-secondary " style="font-size: 15px; position: relative; top: 2px; ">{{#if sum}}
+                      ({{sum}}) {{else}} (0) {{/if}}</span>
+                  </div>
+                  <div style="position: relative; top: 15px">
+                    {{#if (isUser ../user.userType)}}
+                    {{#if isFavorite}}
+                    <form action="/users/removeFavorite" class="formSubmit" method="POST">
+                      <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+                      <button type="submit" class="btn btn-sm py-2 btn-success"
+                        title="Xóa khỏi danh sách khóa học yêu thích">
+                        <i class="fa fa-heart" aria-hidden="true"></i>
+                      </button>
+                    </form>
+                    {{else}}
+                    <form action="/users/addFavorite" method="POST" class="formSubmit">
+                      <input type="text" value="{{courseID}}" name="courseID" class="d-none">
+                      <button type="submit" class="btn btn-sm py-2 btn-outline-success"
+                        title="Thêm vào danh sách khóa học yêu thích">
+                        <i class="fa fa-heart" aria-hidden="true"></i>
+                      </button>
+                    </form>
+                    {{/if}}
+                    {{/if}}
+                  </div>
+                </div>
+                <div class="pb-2">
+                  <span class="card-text"><span class=" font-weight-bold">{{#if (isZero coursePrice)}}Miễn
+                      Phí {{else}}{{format coursePrice}}{{/if}}</span>
+                  </span>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </a>
+      </div>
+
+
+      {{/each}}
+    </div>
+  </div>
+
+
+
+  <div class="list-1 container  w-100" style="padding-top: 100px!important" id='list-1'>
+    <h3 class="" style="">
+      <span class=''>Những lĩnh vực được đăng ký nhiều nhất</span>
+      <hr>
+    </h3>
+    <div class="row">
+      {{#each this.catMostRegistered}}
+
+      <div class="mb-5" style="width: 18%; margin: 1%">
+        <a class="btn top-cat card h-100 shadow d-flex m-auto" href="/courses/listCourse/{{catID}}">
+          <div class="py-1 text-center d-flex flex-column flex-grow-1">
+            <span class="font-weight-bold text-info">{{catName}}</span>
+            <div> <span>{{RES}}: </span><span>lượt đăng ký </span></div>
+            </span>
+          </div>
+        </a>
+      </div>
+
+
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- SLIDE SHOW ENROL --}}
+
+  {{> slideshow parameter=this.mostViewedCourse name="Những khóa học được xem nhiều nhất" index=1}}
+  {{> slideshow parameter=this.latestCourse name="Những khóa học mới nhất" index=2}}
+  {{!-- SLIDE SHOW NEW --}}
+  {{!-- SLIDE SHOW SEEN --}}
+  {{> footer}}
+
+
+</div>

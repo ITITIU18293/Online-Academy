@@ -1,0 +1,104 @@
+{{#section 'js'}}
+<script>
+  $("#submitDeleteUser").click(function () {
+    Swal.fire({
+      title: 'Xóa người dùng này?',
+      text: "Thao tác này không hoàn lại được",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy'
+    }).then((result) => {
+      if (result.value) {
+        var action = $(this).attr('formaction')
+        var form = $("#formEditUser");
+        form.attr('action', action);
+        form.submit();
+        Swal.fire(
+          'Xóa thành công!',
+          'Người dùng này đã được xóa.',
+          'success'
+        ).then((result) => {
+          if (result.value)
+            $(location).attr('href', '/users')
+        })
+      }
+    })
+  });
+
+  $("#submitSaveUser").click(function () {
+      submitSaveUser();
+  })
+
+  function submitSaveUser() {
+    var action = $("#submitSaveUser").attr('formaction')
+    var form = $("#formEditUser");
+    form.attr('action', action);
+    $.ajax({
+      type: "POST",
+      url: action,
+      data: form.serialize(),
+      success: function (data) {
+        if (data.saved) {
+          Swal.fire(
+            'Thay đổi thành công',
+            'Đã thay đổi thông tin người dùng này.',
+            'success'
+          ).then((result) => {
+            location.reload();
+          })
+        }
+        else {
+          Swal.fire(
+            'Email đã tồn tại!!!',
+            'Vui lòng nhập email khác',
+            'error'
+          ).then((result) => {
+            location.reload();
+          })
+        }
+      }
+    })
+  }
+</script>
+{{/section}}
+
+<form method="POST" id="formEditUser">
+  <div class="card  m-5 mt-5">
+    <h5 class="card-header">
+      Thay đổi thông tin người dùng
+    </h5>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="txtUserID">#</label>
+        <input type="text" class="form-control" id="txtUserID" name="userUsername" value="{{this.editUser.userUsername}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="userEmail">Email</label>
+        <input type="text" class="form-control" id="userEmail" name="userEmail" value="{{this.editUser.userEmail}}"
+          autofocus>
+      </div>
+      <div class="form-group">
+        <label for="userDisplayName">Họ tên</label>
+        <input type="text" class="form-control" id="userDisplayName" name="userDisplayName" value="{{this.editUser.userDisplayName}}"
+          >
+      </div>
+    </div>
+    <div class="card-footer text-muted">
+      <a class="btn btn-primary mr-1" href="/users" role="button">
+        <i class="fa fa-backward" aria-hidden="true"></i>
+        Quay về
+      </a>
+      <button type="button" id="submitDeleteUser" class="btn btn-outline-danger mr-1" formaction="/users/del">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+        Xóa người dùng này
+      </button>
+      <button type="button" id="submitSaveUser" class="btn btn-outline-success" formaction="/users/patch">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        Lưu
+      </button>
+    </div>
+  </div>
+</form>

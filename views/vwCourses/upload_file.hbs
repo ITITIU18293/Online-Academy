@@ -1,0 +1,407 @@
+{{#section 'js'}}
+<!-- the fileinput plugin initialization -->
+<!-- Int fileInput-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/css/fileinput.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/js/fileinput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/themes/fa/theme.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.4/js/locales/vi.min.js"></script>
+
+
+<script>
+
+    $('.video_0').fileinput({
+        theme: 'fa',
+        dropZoneEnabled: true,
+        language: "vi",
+        browseLabel: "Chọn video",
+        showUpload: false,
+        uploadLabel: "Tải video",
+        removeLabel: "Xóa",
+        previewFileType: "Video",
+        allowedFileExtensions: ['mp4'],
+    });
+
+
+    var counter = 0;
+
+    function addanlesson() {
+        var thisList = document.getElementById("lesson");
+        var breakLine = document.createElement("br");
+        counter++;
+
+
+        var node = document.createElement("input");
+        node.setAttribute("type", "text");
+        node.setAttribute("name", "lesson");
+        node.setAttribute("placeholder", counter + ". Ten bai hoc");
+
+        node.style.width = "100%";
+        node.style.padding = "10px";
+        node.style.margin = "10px";
+
+
+
+        thisList.appendChild(node);
+        thisList.appendChild(breakLine.cloneNode());
+
+    }
+
+    // Get the modal
+    var modal = document.getElementById('id{{lessonID}}');
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function checkdone() {
+
+    }
+</script>
+
+{{!-- submit add new lesson - remove lesson --}}
+<script>
+    $("#addNewLesson").on("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Nhập tên bài học',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Thêm',
+            cancelButtonText: 'Hủy',
+            showLoaderOnConfirm: true,
+            preConfirm: (name) => {
+
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.value !== undefined) {
+                const courseID = $('#addNewLesson').val();
+                const dataRes = result.value;
+                $.ajax({
+                    type: "POST",
+                    url: '/courses/add_lesson/' + courseID,
+                    data: dataRes,
+                    success: function (data) {
+                        if (data.added) {
+                            Swal.fire(
+                                'Thêm bài học thành công',
+                                'Đã thêm bài học này.',
+                                'success'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        } else {
+                            Swal.fire(
+                                'Bài học đã tồn tại!!!',
+                                'Vui lòng nhập tên khác',
+                                'error'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        }
+                    }
+                })
+            }
+
+        })
+    })
+
+    $(".btnRemoveLesson").on("click", function (e) {
+        Swal.fire({
+            title: 'Xóa bài học này?',
+            text: "Thao tác này không hoàn lại được",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.value) {
+                const courseID = $('#addNewLesson').val();
+                $.ajax({
+                    type: "POST",
+                    url: '/courses/del_lesson/' + courseID,
+                    data: $(this).val(),
+                    success: function (data) {
+                        if (data.del) {
+                            Swal.fire(
+                                'Xóa bài học thành công',
+                                'Đã xóa bài học này.',
+                                'success'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        } else {
+                            Swal.fire(
+                                'Gặp vấn đề khi xóa bài học này!!!',
+                                'Vui lòng thử lại sau',
+                                'error'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+    $("#btnRemoveCourse").on("click", function (e) {
+        Swal.fire({
+            title: 'Xóa khóa học này?',
+            text: "Thao tác này không hoàn lại được",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.value) {
+                const courseID = $('#addNewLesson').val();
+                $.ajax({
+                    type: "POST",
+                    url: '/courses/del_course/' + courseID,
+                    data: $(this).val(),
+                    success: function (data) {
+                        if (data.del) {
+                            Swal.fire(
+                                'Xóa khóa học thành công',
+                                'Đã xóa khóa học này.',
+                                'success'
+                            ).then((result) => {
+                                window.location.href = '/lecturer/courses';
+                            })
+                        } else {
+                            Swal.fire(
+                                'Gặp vấn đề khi xóa khóa học này!!!',
+                                'Vui lòng thử lại sau',
+                                'error'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+</script>
+
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" href="../../public/css/modal.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/css/fileinput.min.css">
+{{/section}}
+
+<div class="">
+
+    <div class="">
+        <div class="course-des" style="width: inherit; background-color: #1E1E1C">
+            <div class="d-flex container m-auto p-3 text-white ">
+                <div class="flex-grow-1">
+                    <div class="p-2 d-flex flex-column flex-grow-1">
+                        <h2 style="font-size: 2rem" class="font-weight-bold">{{course.courseName}}</h2>
+                        <span class="mb-2" style="font-size: 1.5rem">
+                            {{{course.courseDes}}}
+                        </span>
+                        <div class="mt-auto">
+                            <span class="card-text">Giá: <span class="text-danger font-weight-bold">{{format
+                                    coursePrice}}</span>
+                            </span>
+                            <span class="card-text d-block">Số lượng học viên: {{course.courseRegistered}}</span>
+                        </div>
+                    </div>
+                   
+
+                </div>
+                <div class="">
+                    <img src="{{largeImage course.courseImage}}" alt="{{course.courseName}}"
+                        title="{{course.courseName}}">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row container mx-auto">
+            <div class="row col-8">
+                <div class="row container p-5">
+                    <div class="">
+                        <div class="course-detail">
+                            <span>{{{course.courseDetail}}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-4 fixed-course-content mt-5" id="fixed-course-content"
+               >
+                <div class="card shadow d-flex m-auto">
+                  
+                    <div class="p-2 d-flex flex-column flex-grow-1">
+
+                        <div class="mt-auto d-flex flex-column p-3">
+
+                            <h5 class="my-3">Miêu tả về khóa học:</h5>
+                            <div class="ml-4">
+                                <li class="card-text d-block"><i class="fas fa-dollar-sign mr-3 "
+                                        style="width: 20px"></i> Giá: <span class="text-danger font-weight-bold">{{#if
+                                        (isZero course.coursePrice)}}Miễn Phí
+                                        {{else}}{{course.coursePrice}}{{/if}}</span>
+                                </li>
+                                <li class="card-text d-block"><i class="fas fa-user-friends mr-3   "
+                                        style="width: 20px"></i> Số lượng học
+                                    viên: {{course.courseRegistered}}
+                                </li>
+                                <li class="card-text d-block"><i class="fa fa-clock-o mr-3" aria-hidden="true"
+                                        style="width: 20px"></i> Thời
+                                    gian khóa học:
+                                    {{course.courseRegistered}}</li>
+                                <li class="card-text d-block"><i class="fa fa-list-ol mr-3" aria-hidden="true"
+                                        style="width: 20px"></i> Lĩnh
+                                    vực: {{course.catName}}</li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-muted text-right" style="width: 100%;">
+                    <div class="mx-auto ">
+                      
+
+                    <div class="p-2 d-flex flex-column flex-grow-1">
+
+                   
+                    </div>
+                </div>
+                <div class="text-muted d-flex justify-content-between" style="width: 100%;">
+                    <div class="mx-auto p-5">
+                        <a href="/courses/edit_course/{{course.courseID}}" type="button" onclick=""
+                            class=" btn btn-outline-success mr-2">Chỉnh sửa</a>
+                        <button type="button" id="btnRemoveCourse" class=" btn btn-outline-danger">Xóa khóa học</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="card p-0 mx-5 mb-5 container mx-auto" style="">
+        <div class="card-header ">
+            <label>
+                <h5>Danh sách bài học</h5>
+
+            </label>
+            <div class="text-muted text-right" style="display: inline; float :right;">
+                <button class="addNewLesson btn btn-primary" type="button" id="addNewLesson" placeholder="Thêm bài học"
+                    value={{course.courseID}}>Thêm bài học</button>
+            </div>
+        </div>
+        <div class="p-2">
+            <table class="table table-hover px-3">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tên bài học</th>
+                        <th scope="col text-right">Thay đổi bài học</th>
+                        <th scope="col" class="text-right">Trạng thái</th>
+                        <th scope="col" class="text-right">Xóa bài học</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.lesson_items}}
+                    <tr>
+                        <th scope="row"> {{stt}}</th>
+                        <td>{{lessonName}}</td>
+                        <div id="upload" name="upload">
+                            <td>
+                                <button onclick="document.getElementById('id{{lessonID}}').style.display='block'"
+                                    type="button" class="btn btn-primary">Đăng tài liệu</button>
+                                <div id="id{{lessonID}}" class="modal">
+                                    <span onclick="document.getElementById('id{{lessonID}}').style.display='none'"
+                                        class="close" title="Close Modal">×</span>
+                                    <form class="upload_course rounded" id="upload_course"
+                                        action="/courses/upload_course/{{courseID}}/{{lessonID}}" method="post"
+                                        enctype="multipart/form-data">
+                                        <div class=" formcontainer rounded">
+                                            <h1>Tải file</h1>
+                                            <span>Bạn cần tải Video bài giảng vào đây</span>
+                                            <div class="card-body container">
+                                                <div class="form-group">
+                                                    <input type="number" name="courseID" id="courseID"
+                                                        value="{{courseID}}" hidden>
+                                                    <input type="number" name="lessonID" id="lessonID"
+                                                        value="{{lessonID}}" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <input type="file" class="file video_0" name="dom_{{lessonID}}"
+                                                            id="dom_{{lessonID}}">
+                                                    </div>
+                                                    <div class="col-6 d-flex flex-column">
+                                                        <div>
+                                                            <label for="lessonName">Tên bài học: </label>
+                                                            <input type="text" name="lessonName" id="lessonName"
+                                                                value="{{lessonName}}" class="rounded py-1 px-3 m-3">
+                                                        </div>
+                                                        <div class="mt-auto mx-auto">
+
+                                                            <span>Bạn có thể chỉ thay đổi tên bài học tại đây</span>
+                                                            <div>
+                                                                <button type="button"
+                                                                    onclick="document.getElementById('id{{lessonID}}').style.display='none'"
+                                                                    class="btn btn-secondary px-4 m-3"><i
+                                                                        class="fa fa-backward mr-2"
+                                                                        aria-hidden="true"></i> Trở về</button>
+                                                                <button type="submit"
+                                                                    onclick="document.getElementById('id{{lessonID}}').style.display='none'; checkdone();"
+                                                                    class=" btn btn-primary m-3 px-4"><i
+                                                                        class="fas fa-save  mr-2   "></i> Lưu thay
+                                                                    đổi</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                {{#if done}}
+                                Hoàn thành
+                                {{else}}
+                                Chưa hoàn thành
+                                {{/if}}
+                            </td>
+                            <td class="text-right">
+                                <button type="button" value={{lessonID}}
+                                    class="btn btn-outline-danger btnRemoveLesson">Xóa
+                                    bài học</button>
+                            </td>
+                        </div>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer text-muted text-right">
+            <a href="/courses/courses" type="button" id="submitAddCourse" class="btn btn-outline-success">
+                <i class="fa fa-check" aria-hidden="true"></i>
+                Lưu thay đổi
+            </a>
+        </div>
+    </div>
+</div>

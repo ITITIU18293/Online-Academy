@@ -1,0 +1,37 @@
+<div class="row d-flex">
+    <div class="jumbotron mt-5 mx-auto w-50">
+        {{#if (isUndefined this.sendMail)}}
+        <h2 class="display-3">Xác nhận thành công</h2>
+        <p class="lead">Chào mừng bạn đã trở thành thành viên của Online Academy</p>
+        <hr class="my-2">
+        <div class="mt-3">
+            <a type="button" class="btn btn-primary" href="/"><i class="fa fa-home" aria-hidden="true"></i> Trang
+                chủ</a>
+            <a type="button" class="btn btn-success" href="/auth/login"><i class="fas fa-door-open    "></i> Đăng
+                nhập</a>
+        </div>
+        {{else}}
+        {{#if sendMail}}
+        <h2 class="display-3">Hệ thống đã gửi mã xác nhận đến email của bạn</h2>
+        <p class="lead">Vui lòng kiểm tra đường link được nhận để hoàn tất đăng ký</p>
+        <hr class="my-2">
+        <div class="mt-3">
+            <a type="button" class="btn btn-primary" href="/"><i class="fa fa-home" aria-hidden="true"></i> Trang
+                chủ</a>
+            <a type="button" class="btn btn-success" href="/auth/login"><i class="fas fa-door-open    "></i> Đăng
+                nhập</a>
+        </div>
+        {{else}}
+        <h2 class="display-3">Hệ thống gặp vấn đề với email bạn cung cấp</h2>
+        <p class="lead">Vui lòng nhập lại dữ liệu.</p>
+        <hr class="my-2">
+        <div class="mt-3">
+            <a type="button" class="btn btn-primary" href="/"><i class="fa fa-home" aria-hidden="true"></i> Trang
+                chủ</a>
+            <a type="button" class="btn btn-success" href="/auth/login"><i class="fas fa-door-open    "></i> Đăng
+                nhập</a>
+        </div>
+        {{/if}}
+        {{/if}}
+    </div>
+</div>

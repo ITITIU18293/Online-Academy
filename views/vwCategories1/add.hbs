@@ -1,0 +1,62 @@
+{{#section 'js'}}
+<script>
+  $("#submitAddCat").click(function () {
+    if ($("#txtCatName").val().length > 0)
+      $("#formAddCat").submit();
+  });
+
+  $("#formAddCat").on('submit', function (event) {
+    event.preventDefault();
+    var form = $(this);
+    var url = form.attr('action');
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: form.serialize(),
+      success: function (data) {
+        if (data.added) {
+          Swal.fire(
+            'Thêm lĩnh vực thành công',
+            'Đã thêm lĩnh vực này.',
+            'success'
+          ).then((result) => {
+            location.reload();
+          })
+        } else {
+          Swal.fire(
+            'Lĩnh vực đã tồn tại!!!',
+            'Vui lòng nhập tên khác',
+            'error'
+          ).then((result) => {
+            location.reload();
+          })
+        }
+      }
+    })
+  })
+</script>
+{{/section}}
+
+<form method="POST" action="" id="formAddCat">
+  <div class="card  m-5 mt-5">
+    <h5 class="card-header">
+      Thêm lĩnh vực 
+    </h5>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="txtCatName">Tên lĩnh vực</label>
+        <input type="text" class="form-control" id="txtCatName" name="catName" autofocus />
+      </div>
+    </div>
+    <div class="card-footer text-muted">
+      <a class="btn btn-primary mr-1" href="/categories1" role="button">
+        <i class="fa fa-backward" aria-hidden="true"></i>
+        Quay về
+      </a>
+      <button type="button" id="submitAddCat" class="btn btn-outline-success">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        Lưu
+      </button>
+    </div>
+  </div>
+</form>

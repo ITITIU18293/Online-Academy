@@ -1,0 +1,102 @@
+{{#section 'js'}}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/jquery.star-rating-svg.min.js"></script>
+<link rel="stylesheet" type="text/css"
+  href="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/css/star-rating-svg.min.css">
+
+<script>
+  $(".my-rating").starRating({
+    readOnly: true,
+    strokeColor: '#EB8A2F',
+    strokeWidth: 10,
+    starSize: 18
+  });
+
+  function handleDelete(courseID) {
+      Swal.fire({
+      title: 'Xóa khóa học này?',
+      text: "Thao tác này không hoàn lại được",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy'
+    }).then((result) => {
+      if (result.value) {
+        var form = $("#formDeleteCourse");
+        var action = form.attr('formaction')
+        form.attr('action', action);
+        $("#courseID").val(courseID);
+        form.submit();
+        Swal.fire(
+          'Xóa thành công!',
+          'Khóa học này đã được xóa.',
+          'success'
+        ).then((result) => {
+          if (result.value)
+            $(location).attr('href', '/courses')
+        })
+      }
+    })
+  
+  };
+
+
+</script>
+{{/section}}
+
+<div class="card m-5 mt-5">
+  <h5 class="card-header d-flex justify-content-between">
+    <div>
+      <i class="fa fa-books mr-2" aria-hidden="true"></i>Danh sách khóa học
+    </div>
+  </h5>
+  {{#if this.empty}}
+  <div class="card-body">
+    <p class="card-text">Không có dữ liệu.</p>
+  </div>
+  {{else}}
+  <div class="card-body p-0">
+    <div class="row p-3">
+      <form id="formDeleteCourse" action="courses/del" method="post">
+        <input type="text" name="courseID" id="courseID" class="d-none">
+      </form>
+      {{#each this.courses}}
+      <div class="col-md-3 mb-5">
+        <div class="card h-100 shadow d-flex m-auto" style="max-width: 250px">
+          <img src="{{thumbImage courseImage}}" alt="{{courseName}}" title="{{courseName}}">
+          <div class="p-2 d-flex flex-column flex-grow-1">
+            <h5 class="font-weight-bold">{{courseName}}</h5>
+            <span class="mb-2">
+              {{{courseDes}}}
+            </span>
+            <div class="mt-auto d-flex justify-content-between">
+              <span class="card-text">Giá: <span class="text-danger font-weight-bold">{{#if (isZero coursePrice)}}Miễn
+                  Phí {{else}}{{coursePrice}}{{/if}}</span>
+              </span>
+              <div class="my-rating pl-2 pb-2 " data-rating="{{coursePointEval}}"></div>
+            </div>
+          </div>
+
+          <div class="card-footer d-flex" style="padding:1rem!important">
+            <a class="btn btn-sm btn-outline-primary py-2 w-35 mr-2" href="/courses/{{courseID}}" role="button">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+              Chi tiết
+            </a>
+            <button value="{{courseID}}" class="btn btn-sm btn-outline-danger py-2 w-60" onclick={handleDelete({{courseID}})} class="submitDeleteCourse" role="button">
+              <i class="fas fa-trash-alt"></i>
+              Xóa
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+  <div class="card-footer text-muted">
+
+  </div>
+</div>

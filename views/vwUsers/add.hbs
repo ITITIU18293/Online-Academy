@@ -1,0 +1,82 @@
+{{#section 'js'}}
+<script>
+  $("#submitAddUser").click(function () {
+    $("#formAddUser").submit();
+  });
+
+  $("#formAddUser").on('submit', function (event) {
+    event.preventDefault();
+    var form = $(this);
+    var url = form.attr('action');
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: form.serialize(),
+      success: function (data) {
+        if (data.added) {
+          Swal.fire(
+            'Thêm người dùng thành công',
+            'Đã thêm người dùng này.',
+            'success'
+          ).then((result) => {
+            location.reload();
+          })
+        } else {
+          Swal.fire(
+            'Username hoặc email đã tồn tại!!!',
+            'Vui lòng nhập lại dữ liệu khác',
+            'error'
+          ).then((result) => {
+            location.reload();
+          })
+        }
+      }
+    })
+  })
+</script>
+{{/section}}
+
+<form method="POST" action="" id="formAddUser">
+  <div class="card  m-5 mt-5">
+    <h5 class="card-header">
+      Thêm người dùng
+    </h5>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="txtUsername">Tên đăng nhập</label>
+        <input type="text" class="form-control" id="txtUsername" name="userUsername" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="txtUsername">Mật khẩu</label>
+        <input type="text" class="form-control" id="txtUsername" name="userPassword">
+      </div>
+      <div class="form-group">
+        <label for="txtUsername">Họ tên</label>
+        <input type="text" class="form-control" id="txtUsername" name="userDisplayName">
+      </div>
+      <div class="form-group">
+        <label for="txtUsername">Email</label>
+        <input type="text" class="form-control" id="txtUsername" name="userEmail">
+      </div>
+      <div class="form-group">
+        <label for="txtUsername mr-5">Loại người dùng</label>
+        <select name="userType" id="" class="p-1 ml-2">
+          <option value="1">Người dùng</option>
+          <option value="2">Giảng viên</option>
+          <option value="0">Admin</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-footer text-muted">
+      <a class="btn btn-primary mr-1" href="/users" role="button">
+        <i class="fa fa-backward" aria-hidden="true"></i>
+        Quay về
+      </a>
+      <button type="button" id="submitAddUser" class="btn btn-outline-success">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        Lưu
+      </button>
+    </div>
+  </div>
+</form>

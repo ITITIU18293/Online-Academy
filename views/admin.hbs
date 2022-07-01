@@ -1,0 +1,147 @@
+{{#section 'css'}}
+<style>
+
+
+  .card-statistical i {
+    color: rgb(0, 221, 255);
+  }
+</style>
+{{/section}}
+
+{{#section 'js'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script>
+  var ctx = document.getElementById('myChart');
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+      datasets: [{
+        label: 'Số lượng người dùng',
+        data: [12, 19, 3, 5, 2, 3, 5, 11, 20, 40, 6, 30],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+</script>
+{{/section}}
+
+<div class="p-5" style=" min-height:100vh">
+  <div class="container">
+    <div>
+      <div class="row">
+        <div class="col-8">
+          <canvas id="myChart" class="my-auto"></canvas>
+
+        </div>
+        <div class="col-4 p-4">
+          <div class="bg-white w-100 h-100 p-3 shadow rounded d-flex flex-column">
+            <div>
+              <p class="lead text-center">Thống kê số lượng người dùng năm 2020</p>
+              <hr class="my-2">
+            </div>
+            <div class="my-auto mx-auto">
+              <div>
+                <i class="fas fa-hashtag mr-2"></i>
+                <span>Tháng nhiều nhất: 10</span>
+              </div>
+              <div>
+                <i class="fas fa-hashtag mr-2"></i>
+                <span>Tháng ít nhất: 5</span>
+              </div>
+              <div>
+                <i class="fas fa-hashtag mr-2"></i>
+                <span>Trung bình cả năm: 25</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="cart-list-statistical row col-12 d-flex mt-4">
+        <div class="card-statistical col-3 mt-4">
+          <div class="p-3 bg-white shadow rounded">
+            <div style="position: relative">
+              <p>Số lượt vào website</p>
+              <h4>30000</h4>
+              <p>Từ ngày 1/1/2020</p>
+
+              <div class="icon-statistical p-2 px-2 bg-primary rounded" style="position: absolute; top: 0px; right: 0px ">
+                <i class="fa fa-eye" style="font-size: 20px" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-statistical col-3 mt-4">
+          <div class="p-3 bg-white shadow rounded">
+            <div style="position: relative">
+              <p>Số người dùng mới</p>
+              <h4>100</h4>
+               <p>Từ ngày 1/1/2020</p>
+
+              <div class="icon-statistical p-2 px-2 bg-primary rounded" style="position: absolute; top: 0px; right: 0px">
+                <i class="fa fa-user-plus" style="font-size: 20px" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-statistical col-3 mt-4 ">
+          <div class="p-3 bg-white shadow rounded">
+            <div style="position: relative">
+              <p>Tổng số người dùng</p>
+              <h4>300</h4>
+           <p>Từ ngày 1/1/2020</p>
+
+              <div class="icon-statistical p-2 px-2 bg-primary rounded" style="position: absolute; top: 0px; right: 0px ">
+                <i class="fa fa-user-friends  " style="font-size: 20px" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-statistical col-3 mt-4">
+          <div class="p-3 bg-white shadow rounded">
+            <div style="position: relative">
+              <p>Đăng ký khóa học</p>
+              <h4>200</h4>
+              <p>Từ ngày 1/1/2020</p>
+
+              <div class="icon-statistical p-2 px-2 bg-primary rounded" style="position: absolute; top: 0px; right: 0px ">
+                <i class="fa fa-cart-plus" style="font-size: 20px" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+</div>

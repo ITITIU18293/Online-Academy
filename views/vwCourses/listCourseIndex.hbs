@@ -1,0 +1,188 @@
+{{#section 'js'}}
+<script src="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/jquery.star-rating-svg.min.js"></script>
+<link rel="stylesheet" type="text/css"
+  href="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/css/star-rating-svg.min.css">
+<script>
+  $(".my-rating").starRating({
+    readOnly: true,
+    strokeColor: '#EB8A2F',
+    strokeWidth: 10,
+    totalStars: 5,
+    starSize: 18
+  });
+</script>
+
+<script>
+  $('.option-price').click(function () {
+    const value = $(this).children(":first").val()
+    var currentUrl = window.location.href;
+    var url = new URL(currentUrl);
+    url.searchParams.set("price", value);
+    var newUrl = url.href;
+    window.location.href = newUrl;
+  })
+  $('.option-rating').click(function () {
+    const value = $(this).children(":first").val()
+    var currentUrl = window.location.href;
+    var url = new URL(currentUrl);
+    url.searchParams.set("rating", value);
+    var newUrl = url.href;
+    window.location.href = newUrl;
+  })
+  $('.page-link').click(function () {
+    const value = $(this).val()
+    var currentUrl = window.location.href;
+    var url = new URL(currentUrl);
+    url.searchParams.set("page", value);
+    var newUrl = url.href;
+    window.location.href = newUrl;
+  })
+</script>
+{{/section}}
+
+<div class="container mt-5 m-5 mx-auto">
+  <div>
+    <h2>Tất cả các khóa học </h2>
+    {{#if (isUndefined dataSearch)}}
+    {{else}}
+    <span class="text-danger">Từ khóa tìm kiếm: {{dataSearch}}</span>
+    {{/if}}
+  </div>
+
+  <div class="row my-5">
+
+
+    <div class="row w-100 container">
+      <div class="col-3 ">
+        <h5>Bộ lọc</h5>
+        <div class="price-order mt-3 shadow">
+          <div class="select-box " style="">
+            <div class="options-container active">
+              <div class="option option-price pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="input_price" name="category" value="asc" />
+                <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">Tăng dần</span>
+              </div>
+              <div class="option option-price pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="automobiles" name="category" value="desc" />
+                <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">Giảm dần</span>
+              </div>
+            </div>
+
+            <a href="javascript:void(0)" class="selected list-group-item rounded list-group-item-action border-0"
+              style="border-bottom: 1px rgba(0,0,0,.125) solid !important; background-color: #56a4f1">
+              <span><span class=""></span>Giá</span>
+            </a>
+          </div>
+        </div>
+        <div class="rating-score mt-3 shadow">
+          <div class="select-box " style="">
+            <div class="options-container active">
+              <div class="option option-rating pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="input_rating" name="category" value="1" />
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">
+                  <div class="my-rating pl-2 pb-2 " data-rating="1"></div>
+                </span>
+              </div>
+              <div class="option option-rating pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="input_rating" name="category" value="2" />
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">
+                  <div class="my-rating pl-2 pb-2 " data-rating="2"></div>
+                </span>
+              </div>
+
+              <div class="option option-rating pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="input_rating" name="category" value="3" />
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">
+                  <div class="my-rating pl-2 pb-2 " data-rating="3"></div>
+                </span>
+              </div>
+
+              <div class="option option-rating pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="input_rating" name="category" value="4" />
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">
+                  <div class="my-rating pl-2 pb-2 " data-rating="4"></div>
+                </span>
+              </div>
+              <div class="option option-rating pl-2 d-block p-3" style="color: black;text-decoration: none;">
+                <input type="radio" class="radio" id="input_rating" name="category" value="5" />
+                <span for="automobiles" style="max-width: 180px; overflow: hidden;">
+                  <div class="my-rating pl-2 pb-2 " data-rating="5"></div>
+                </span>
+              </div>
+            </div>
+
+            <a href="javascript:void(0)" class="selected list-group-item rounded list-group-item-action border-0"
+              style="border-bottom: 1px rgba(0,0,0,.125) solid !important; background-color: #56a4f1">
+              <span><span class=""></span>Điểm đánh giá</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-9">
+        <div class="d-inline">
+          <h5 class="pb-2">Danh sách khóa học</h5>
+          {{#if (isUndefined price)}}
+          {{else}}
+          <label class="btn btn-outline-info mr-4">Giá: {{price}}</label>
+          {{/if}}
+          {{#if (isUndefined rating)}}
+          {{else}}
+          <label class="btn btn-outline-info">Mức đánh giá: {{rating}}</label>
+          {{/if}}
+
+          {{#if empty}}
+          <div class="pl-3 mb-5">
+            <h4>Lĩnh vực này chưa có khóa học nào</h4>
+          </div>
+          {{else}}
+          {{#each listCourse}}
+          <div class="card shadow d-flex flex-row my-3">
+            <img src="{{thumbImage courseImage}}" style="width: 250px;" alt="{{courseName}}" title="{{courseName}}">
+            <div class="p-3 d-flex flex-column flex-grow-1">
+              <h5 class="font-weight-bold m-0">{{courseName}}</h5>
+              <span class="text-success font-weight-bold d-block">{{userDisplayName}}</span>
+              <span class="mb-2">
+                {{{courseDes}}}
+              </span>
+              <div class="mt-auto d-flex">
+                <span style="position: relative; top: 2px; "
+                  class="text-danger font-weight-bold">{{coursePointEval}}</span>
+                <div class="my-rating pb-2 mr-3 ml-1 d-inline" data-rating="{{coursePointEval}}">
+                </div>
+              </div>
+            </div>
+            <div class="ml-auto pr-2 pt-2 pb-3 text-right d-flex flex-column">
+              <span class="card-text"><span class="text-danger font-weight-bold">{{#if (isZero coursePrice)}}Miễn
+                  Phí {{else}}{{format coursePrice}}{{/if}}</span>
+              </span>
+              <a class=" mt-auto btn btn-sm btn-outline-primary py-2" href="/courses/{{courseID}}" role="button">
+                <i class="fa fa-eye mr-1" aria-hidden="true"></i>
+                <span>Chi tiết</span>
+              </a>
+            </div>
+          </div>
+          {{/each}}
+          <nav aria-label="Page navigation example" class="px-auto">
+            <ul class="pagination text-center">
+              <div class="mx-auto d-flex mt-3">
+                <li class="page-item"><button class="page-link" {{#if can_go_prev}} {{else}}disabled{{/if}}
+                    value={{prev_value}}>Trang trước</button></li>
+                {{#each page_items}}
+                <li class="page-item"><button class="page-link" value={{value}}>{{value}}</button></li>
+                {{/each}}
+                <li class="page-item"><button class="page-link" {{#if can_go_next}} {{else}}disabled{{/if}}
+                    value={{next_value}}>Trang tiếp theo</button></li>
+              </div>
+            </ul>
+          </nav>
+          {{/if}}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{{> footer}}

@@ -1,0 +1,295 @@
+{{#section 'js'}}
+<!-- the fileinput plugin initialization -->
+
+<!-- Int fileInput-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/css/fileinput.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/js/fileinput.min.js"></script>
+
+<!--Int fiel quilljf-->
+<script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<script>
+    function addEditFunc(id) {
+        document.getElementById(id).readOnly = false;
+    }
+
+    var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' +
+        '</button>';
+    $("#avatar-2").fileinput({
+        overwriteInitial: true,
+        maxFileSize: 1500,
+        showClose: false,
+        showCaption: false,
+        showBrowse: false,
+        browseOnZoneClick: true,
+        removeLabel: '',
+        removeIcon: '<i class="glyphicon glyphicon-remove">Remove</i>',
+        removeTitle: 'Cancel or reset changes',
+        elErrorContainer: '#kv-avatar-errors-2',
+        msgErrorClass: 'alert alert-block alert-danger',
+        defaultPreviewContent: '<h6 class="text-muted">Chọn ảnh</h6>',
+        layoutTemplates: {
+            main2: '{preview} ' + ' {remove} {browse}'
+        },
+        allowedFileExtensions: ["jpg", "png", "gif"]
+    });
+</script>
+
+<script>
+    var editor = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{
+                    'header': [1, 2, 3, false]
+                }],
+                [{
+                    'color': []
+                }, {
+                    'background': []
+                }],
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{
+                    'list': 'ordered'
+                }, {
+                    'list': 'bullet'
+                }],
+                [{
+                    'indent': '-1'
+                }, {
+                    'indent': '+1'
+                }],
+                ['clean']
+            ]
+        }
+    });
+
+    editor.on('text-change', function (delta, source) {
+        updateHtmlOutput()
+    })
+
+    function getQuillHtml() {
+        return editor.root.innerHTML;
+    }
+
+    function updateHtmlOutput() {
+        let html = getQuillHtml();
+        console.log(html);
+        document.getElementById('full_des').value = html;
+    }
+
+</script>
+
+
+</script>
+
+
+</script>
+
+<script>
+    var counter = 0;
+
+    function addanlesson() {
+        var thisList = document.getElementById("lesson");
+        var breakLine = document.createElement("br");
+        counter++;
+
+
+        var node = document.createElement("input");
+        node.setAttribute("type", "text");
+        node.setAttribute("name", "lesson");
+        node.setAttribute("placeholder", counter + ". Tên bài học");
+
+        node.style.width = "100%";
+        node.style.padding = "10px";
+        node.style.marginTop = "10px";
+        node.style.border = "1px solid #ced4da";
+
+
+
+        thisList.appendChild(node);
+        thisList.appendChild(breakLine.cloneNode());
+
+    }
+</script>
+
+<script>
+    function myValidate() {
+        var isValid = true;
+
+
+        var name = document.forms["frmCourse"]["courseName"].value;
+        if (name == "") {
+            isValid = false;
+            document.getElementById("txtCourseName").placeholder = "Nhập tên vào đây..";
+            document.getElementById("txtCourseName").style.borderColor = "#cd353b";
+            document.getElementById("name-err").style.display = "block";
+
+        }
+
+        var short = document.forms["frmCourse"]["short_des"].value;
+        if (short == "") {
+
+            isValid = false;
+            document.getElementById("short_des").placeholder = "Nhập mô tả ngắn vào đây..";
+            document.getElementById("short_des").style.borderColor = "#cd353b";
+            document.getElementById("short-err").style.display = "block";
+        }
+        var full = document.forms["frmCourse"]["full_des"].value;
+        if (full == "") {
+
+            isValid = false;
+            document.getElementById("full_des").style.borderColor = "#cd353b";
+            document.getElementById("full-err").style.display = "block";
+        }
+
+        var price = document.forms["frmCourse"]["price"].value;
+        if (price == "") {
+
+            isValid = false;
+            document.getElementById("price").placeholder = "Nhập mức học phí vào đây";
+            document.getElementById("price").style.borderColor = "#cd353b";
+            document.getElementById("price-err").style.display = "block";
+        }
+        if (isValid) {
+            document.getElementById("frmCourse").submit();
+
+        }
+    }
+</script>
+
+{{/section}}
+
+{{#section 'css'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.3/css/fileinput.min.css">
+{{/section}}
+
+<div class="container card mt-5 p-0 mb-5">
+    <div class="card-header  text-center">
+        <h4>THÊM KHÓA HỌC</h4>
+    </div>
+
+    <div class="p-4 bg-light">
+        <div id="kv-avatar-errors-2" class="center-block" style="width:800px;display:none"></div>
+        <form id="frmCourse" class="form form-vertical" action="" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-4 text-center">
+                    <div class="kv-avatar bg-white ">
+                        <div class="file-loading">
+                            <input id="avatar-2" name="avatar-2" type="file">
+                        </div>
+
+                    </div>
+                    <p>Ảnh khóa học</p>
+                </div>
+                <div class="col-sm-8">
+                    <div class="card">
+                        <h5 class="card-header">
+                            Khóa học mới
+                        </h5>
+                        {{#if err}}
+                        <div class="p-2 alert-success mb-1 text-danger" role="alert">
+                            <span>{{this.errorMsg}}</span>
+
+                        </div>
+                        {{else}}
+                        <div class="p-2 mb-1 text-danger" style="visibility:hidden" role="alert">
+                            <span class="alert-heading">Thông báo</span>
+                        </div>
+                        {{/if}}
+                        <div class="mt-3 px-3">
+                            <div class="">
+                                <label for="txtCourseName">Khóa học</label>
+                                <input type="text" class="form-control" id="txtCourseName" name="courseName" autofocus>
+                                <div id="name-err" class="p-0 m-0 alert-success mb-1 text-danger" for="fullname"
+                                    style="display: none;">
+                                    <label for="name-err" class="m-0">Vui lòng nhập dữ liệu</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 px-3">
+                            <div class="">
+                                <label for="short_des">Mô tả ngắn gọn</label>
+                                <input type="text" class="form-control" id="short_des" name="short_des">
+                                <div id="short-err" class="p-0 m-0 alert-success mb-1 text-danger" for="fullname"
+                                    style="display: none;">
+                                    <label for="short-err" class="m-0">Vui lòng nhập dữ liệu</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mt-3 px-3">
+                            <div class="">
+                                <label for="full_des">Mô tả chi tiết</label>
+                                <div id="editor" style="height: 300px;"></div>
+                                <div id="full-err" class="p-0 m-0 alert-success mb-1 text-danger" for="fullname"
+                                    style="display: none;">
+                                    <label for="full-err" class="m-0">Vui lòng nhập dữ liệu</label>
+                                </div>
+                                <input type="text" class="form-control" id="full_des" name="full_des"
+                                    style="visibility: hidden; height: 0px;">
+
+                            </div>
+                        </div>
+
+                        <div class="mt-3 px-3">
+                            <div class="">
+                                <label for="category">Chọn lĩnh vực</label>
+                                <select id="category" name="category">
+                                    {{#each this.category}}
+
+                                    <option value="{{catLevel1ID}}{{catID}}">{{catName}}</option>
+
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row px-3">
+                            <div class="mt-3  col-6">
+                                <div class="">
+                                    <label for="price">Học phí</label>
+                                    <input type="number" class="form-control" id="price" name="price" value="0">
+                                    <div id="price-err" class="p-0 m-0 alert-success mb-1 text-danger" for="fullname"
+                                        style="display: none;">
+                                        <label for="price-err" class="m-0">Vui lòng nhập dữ liệu</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 px-3 col-6">
+                                <div class="">
+                                    <label for="discount">Thông tin khuyến mãi</label>
+                                    <input type="text" class="form-control" id="discount" name="discount" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mt-3 mb-3 px-3">
+                            <div class="">
+                                <label for="lesson">Danh sách bài học</label>
+                                <div id="lesson"></div>
+                                <input type="text" name="lesson" id="lesson" style="visibility: hidden; display: none">
+                                <button type="button" class="btn btn-info mt-3" onclick="addanlesson()">Thêm bài
+                                    học</button>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-muted text-center">
+                            <button type="button" id="submitAddCourse" onclick="myValidate()"
+                                class="btn btn-outline-success px-3">
+                                <i class="fas fa-save mr-3"></i>
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>
+</div>

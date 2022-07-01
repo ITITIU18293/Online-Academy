@@ -1,0 +1,258 @@
+{{#section 'css'}}
+<style>
+    .videoContainer {
+        max-width: 800px;
+    }
+
+    .plyr {
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+
+    .select-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .option label {
+        margin-bottom: 0px !important;
+        padding: 10px
+    }
+
+    .option {
+        padding: 0px 10px;
+    }
+
+    .select-box .options-container {
+        max-height: 0;
+        width: 100%;
+        opacity: 0;
+        transition: all 0.4s;
+        overflow: hidden;
+        order: 1;
+        background-color: white !important;
+    }
+
+    .selected {
+        position: relative;
+        order: 0;
+    }
+
+    .selected::after {
+        content: "";
+        background-size: contain;
+        background-repeat: no-repeat;
+        position: absolute;
+        height: 100%;
+        width: 32px;
+        right: 10px;
+        top: 5px;
+        transition: all 0.4s;
+    }
+
+    .select-box .options-container.active {
+        max-height: fit-content;
+        opacity: 1;
+        overflow-y: scroll;
+    }
+
+    .select-box .options-container.active+.selected::after {
+        transform: rotateX(180deg);
+        top: -6px;
+    }
+
+    .select-box .options-container::-webkit-scrollbar {
+        width: 0px;
+        background: #2573c0;
+    }
+
+    #sidebar-wrapper::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    .select-box .options-container::-webkit-scrollbar-thumb {
+        background: #3a7cbe;
+    }
+
+    a.list-group-item:hover {
+        background-color: #56a4f1 !important;
+    }
+
+    .list-group-item-action {
+        color: black !important;
+    }
+
+    .select-box .option,
+    .selected {
+        cursor: pointer;
+    }
+
+    .select-box .option:hover {
+        background: #3b87d3;
+    }
+
+    .select-box label {
+        cursor: pointer;
+    }
+
+    .select-box .option .radio {
+        display: none;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css" />
+{{/section}}
+
+{{#section 'js'}}
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.selected').click(function () {
+            let optionsContainer = $(this).parent().children()[0];
+            optionsContainer.classList.toggle("active");
+        });
+    });
+
+    $(document).ready(function () {
+        $('#searchInput').keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                let action = '/courses/search?dataSearch=' + $(this).val()
+                window.location.href = action;
+            }
+        });
+
+    });
+</script>
+<script>
+    $("#formState").on('submit', function (event) {
+        event.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+        })
+    })
+    $("video")[0].onplay = function () {
+        console.log("hello");
+
+        $("#formState").submit();
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // This is the bare minimum JavaScript. You can opt to pass no arguments to setup.
+        const player = new Plyr('#player');
+
+        // Expose
+        window.player = player;
+
+        // Bind event listener
+        function on(selector, type, callback) {
+            document.querySelector(selector).addEventListener(type, callback, false);
+        }
+
+        // Play
+        on('.js-play', 'click', () => {
+            player.play();
+        });
+
+        // Pause
+        on('.js-pause', 'click', () => {
+            player.pause();
+        });
+
+        // Stop
+        on('.js-stop', 'click', () => {
+            player.stop();
+        });
+
+        // Rewind
+        on('.js-rewind', 'click', () => {
+            player.rewind();
+        });
+
+        // Forward
+        on('.js-forward', 'click', () => {
+            player.forward();
+        });
+    });
+</script>
+{{/section}}
+
+<div class="container-fluid d-flex justify-content-between p-0">
+    <div class="">
+
+    </div>
+    <div class="videoContainer  align-self-top">
+        <div class="mx-5 mt-5">
+            <h5>Tên khóa học: {{course.courseName}}</h5>
+            <p>Tên bài học: {{contentLesson.lessonName}}</p>
+        </div>
+        <div class="m-3 shadow rounded p-3 bg-light ">
+            <form action="/users/saveState" method="post" class="d-none" id="formState">
+                <input type="text" name="learnCourse" value="{{this.id}}" />
+                <input type="text" name="learnLesson" value="{{this.lesson}}" />
+            </form>
+            <video controls id="player">
+                <!-- Video files -->
+                <source src="/public/imagesCourse/{{this.id}}/{{this.lesson}}/video.mp4" type="video/mp4" size="576">
+                <source src="/public/imagesCourse/{{this.id}}/{{this.lesson}}/video.mp4" type="video/mp4" size="720">
+            </video>
+
+            <div class="actions text-center mb-3">
+                <button type="button" class="btn btn-primary js-play" title="Phát">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-primary js-pause" title="Dừng">
+                    <i class="fa fa-pause" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-primary js-stop" title="Ngừng xem">
+                    <i class="fa fa-stop" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-primary js-rewind" title="Tua lùi 10s">
+                    <i class="fa fa-backward" aria-hidden="true"></i>
+                </button>
+
+                <button type="button" class="btn btn-primary js-forward" title="Tua tới 10s">
+                    <i class="fa fa-forward" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-light border-left m-0 text-center" style="width: 300px; min-height: 90vh">
+        <div class="list-group list-group-flush">
+            <label class="list-group-item m-0 text-white bg-primary font-weight-bold "> MỤC LỤC </label>
+            <div>
+                {{#each this.lessons}}
+                <div class="select-box" style="">
+                    <div class="options-container">
+                        {{!-- {{#each units}}
+                        <a class="option pl-2 d-block p-3 sidebarClick border-bottom"
+                            style="color: black;text-decoration: none;"
+                            href="/courses/learn?courseID={{../courseID}}&lessonID={{../lessonID}}&unit={{name}}">
+                            <span for="automobiles" style="max-width: 180px; overflow: hidden;">Bài {{name}}</span>
+
+                        </a>
+                        {{/each}} --}}
+                    </div>
+                    <a href="/courses/learn?courseID={{courseID}}&lessonID={{lessonID}}"
+                        class="selected list-group-item list-group-item-action border-0 {{#if done}} {{else}} disabled {{/if}} {{#if isActive}} active {{/if}}"
+                        style="border-bottom: 1px rgba(0,0,0,.125) solid !important">
+                        <span class="">{{lessonName}}</span>
+                        {{#if isLearn}}
+                        <span class="badge badge-danger float-right" style="padding: 5px"><i class="fa fa-check"
+                                aria-hidden="true"></i></span>
+                        {{/if}}
+                        {{#if done}}{{else}} <span class="mr-3 font-weight-bold"
+                            style='font-size: .75rem; color: #007AFD; position: relative; top: -5px'>Sắp
+                            có</span>{{/if}}
+                    </a>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
